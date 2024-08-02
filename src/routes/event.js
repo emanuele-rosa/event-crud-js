@@ -1,6 +1,5 @@
 var express = require("express");
 var router = express.Router();
-const jwt = require("jsonwebtoken");
 
 var EventModel = require("../model/Events");
 const {
@@ -9,8 +8,9 @@ const {
   updateEvent,
   deleteEvent,
   listEvents,
-  login,
 } = require("../controllers/eventController");
+
+const { login, validaToken } = require("../helpers/auth");
 
 let getEvents = (req, res, next) => {
   let id = req.params.id;
@@ -48,21 +48,6 @@ let validaNome = (req, res, next) => {
   req.description = description;
   req.place = place;
   next();
-};
-
-let validaToken = (req, res, next) => {
-  let token = req.headers["authorization"];
-
-  let cleanedToken = token.split(" ")[1];
-
-  jwt.verify(cleanedToken, "#aBcDeFgH", (err, decoded) => {
-    if (err) {
-      res.status(401).json({ status: false, error: "Invalid token!" });
-    } else {
-      req.user = decoded.user;
-      next();
-    }
-  });
 };
 
 router.post("/login", login);
