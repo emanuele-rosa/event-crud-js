@@ -56,7 +56,7 @@ router.get("/", validaToken, listEvents);
 
 router.get("/:id", validaToken, getEvents, getEventById);
 
-router.post("/", validaToken, validaNome, createEvent);
+router.post("/create", validaToken, validaNome, createEvent);
 
 router.put("/:id", validaToken, validaNome, getEvents, updateEvent);
 
