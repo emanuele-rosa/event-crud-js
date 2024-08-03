@@ -7,7 +7,7 @@ var eventRouter = require("./routes/event");
 
 var app = express();
 
-app.use("/documentation", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
