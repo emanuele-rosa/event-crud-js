@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "nodemon -e js ./bin/www",
-    "swagger": "node swagger.js"
+    "swagger-autogen": "node swagger.js"
   },
   "dependencies": {
     "express": "~4.16.1",
