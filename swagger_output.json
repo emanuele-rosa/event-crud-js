@@ -5,9 +5,22 @@
         "version": "1.0.0",
         "description": "API para gerenciar eventos"
     },
+    "tags": [
+        {
+            "name": "Autenticação",
+            "description": "Operações relacionadas à autenticação de usuários"
+        },
+        {
+            "name": "Eventos",
+            "description": "Operações relacionadas ao gerenciamento de eventos"
+        }
+    ],
     "paths": {
         "/login": {
             "post": {
+                "tags": [
+                    "Autenticação"
+                ],
                 "summary": "Login de usuário",
                 "description": "Autentica um usuário",
                 "requestBody": {
@@ -44,6 +57,9 @@
         },
         "/": {
             "get": {
+                "tags": [
+                    "Eventos"
+                ],
                 "summary": "Listar eventos",
                 "description": "Retorna uma lista de todos os eventos",
                 "security": [
@@ -73,6 +89,9 @@
         },
         "/{id}": {
             "get": {
+                "tags": [
+                    "Eventos"
+                ],
                 "summary": "Obter evento por ID",
                 "description": "Retorna um evento específico pelo ID",
                 "security": [
@@ -110,6 +129,9 @@
                 }
             },
             "put": {
+                "tags": [
+                    "Eventos"
+                ],
                 "summary": "Atualizar evento",
                 "description": "Atualiza um evento específico pelo ID",
                 "security": [
@@ -150,6 +172,9 @@
                 }
             },
             "delete": {
+                "tags": [
+                    "Eventos"
+                ],
                 "summary": "Deletar evento",
                 "description": "Deleta um evento específico pelo ID",
                 "security": [
@@ -182,6 +207,9 @@
         },
         "/create": {
             "post": {
+                "tags": [
+                    "Eventos"
+                ],
                 "summary": "Criar evento",
                 "description": "Cria um novo evento",
                 "security": [
