@@ -10,7 +10,7 @@ const {
   listEvents,
 } = require("../controllers/eventController");
 
-const { login, validaToken } = require("../helpers/auth");
+const { validaToken } = require("../helpers/auth");
 
 let getEvents = (req, res, next) => {
   let id = req.params.id;
@@ -49,8 +49,6 @@ let validaNome = (req, res, next) => {
   req.place = place;
   next();
 };
-
-router.post("/login", login);
 
 router.get("/", validaToken, listEvents);
 
