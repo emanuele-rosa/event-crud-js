@@ -3,7 +3,7 @@ var swaggerUi = require("swagger-ui-express");
 var swaggerFile = require("../swagger_output.json");
 
 var indexRouter = require("./routes/index");
-var eventRouter = require("./routes/event");
+var eventRouter = require("./routes/EventRoutes");
 var userRoutes = require("./routes/UserRoutes");
 
 var app = express();
