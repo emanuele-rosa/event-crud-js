@@ -1,3 +1,5 @@
+require("../db/conn");
+
 var express = require("express");
 var swaggerUi = require("swagger-ui-express");
 var swaggerFile = require("../swagger_output.json");
@@ -15,6 +17,6 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/", indexRouter);
 app.use("/event", eventRouter);
-app.use("/user", userRoutes)
+app.use("/user", userRoutes);
 
 module.exports = app;
