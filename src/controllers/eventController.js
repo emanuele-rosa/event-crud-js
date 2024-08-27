@@ -1,11 +1,16 @@
-const EventModel = require("../model/Events");
-const jwt = require("jsonwebtoken");
+const mongoose = require("mongoose");
+const EventSchema = require("../model/Event");
+const EventModel = mongoose.model("Event", EventSchema);
 
 exports.createEvent = async (req, res) => {
   try {
+    const { name, place, date, description } = req.body;
+    const newEvent = new EventModel({ name, place, date, description });
+    await newEvent.save();
+
     res.json({
       status: true,
-      event: EventModel.new(req.name, req.place, req.description),
+      event: newEvent,
     });
   } catch {
     res.json({
