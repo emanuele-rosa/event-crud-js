@@ -14,11 +14,14 @@ exports.createLogin = async (req, res) => {
     }
 
     const newUser = new UsuarioModel({ name, password, email, isAdmin });
-    newUser.save();
 
     let token = jwt.sign({ name: newUser.name }, "#aBcDeFgH", {
       expiresIn: "1h",
     });
+
+    newUser.token = token;
+
+    await newUser.save();
     res.json({ status: true, token: token });
   } catch (error) {
     console.error(error);
