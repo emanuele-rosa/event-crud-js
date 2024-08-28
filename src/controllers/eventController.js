@@ -38,14 +38,25 @@ exports.getEventById = async (req, res) => {
 
 exports.updateEvent = async (req, res) => {
   try {
-    res.json({
-      status: true,
-      event: EventModel.update(
-        req.event.id,
-        req.name,
-        req.place,
-        req.description
-      ),
+    const { id } = req.params;
+    const { name, place, date, description } = req.body;
+
+    let obj = {};
+    if (name) obj.name = name;
+    if (place) obj.place = place;
+    if (date) obj.date = date;
+    if (description) obj.description = description;
+
+    if (obj == {}) {
+      return res.status(500).json(fail("No changes detected"));
+    }
+
+    EventModel.updateOne(id, obj).then((event) => {
+      if (event) {
+        res.json({ status: true, msg: "Event updated successfully!" });
+      } else {
+        res.json({ status: false, error: "Event not found!" });
+      }
     });
   } catch {
     res.json({
