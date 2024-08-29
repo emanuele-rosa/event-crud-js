@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const UserSchema = require("../model/User");
 const UsuarioModel = mongoose.model("Usuario", UserSchema);
 
-exports.createLogin = async (req, res) => {
+exports.userRegister = async (req, res) => {
   const { name, email, password, isAdmin } = req.body;
   try {
     const existingUser = await UsuarioModel.findOne({ email });
