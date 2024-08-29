@@ -1,7 +1,11 @@
 var express = require("express");
 var router = express.Router();
+var mongoose = require("mongoose");
 
-var EventModel = require("../model/Events");
+// var EventModel = require("../model/Events");
+
+const EventSchema = require("../model/Event");
+const EventModel = mongoose.model("Event", EventSchema);
 const {
   createEvent,
   getEventById,
@@ -14,7 +18,7 @@ const { validaToken } = require("../helpers/auth");
 
 let getEvents = (req, res, next) => {
   let id = req.params.id;
-  let obj = EventModel.getElementById(id);
+  let obj = EventModel.findById(id);
   if (obj == null) {
     res.status(404).json({ status: false, error: "The event was not found!" });
     return;
@@ -56,8 +60,8 @@ router.get("/:id", validaToken, getEvents, getEventById);
 
 router.post("/create", validaToken, validaNome, createEvent);
 
-router.put("/update", validaToken, validaNome, updateEvent);
+router.put("/update", validaToken, getEvents, validaNome, updateEvent);
 
-router.delete("/delete/:id", validaToken, deleteEvent);
+router.delete("/delete/:id", getEvents, validaToken, deleteEvent);
 
 module.exports = router;
