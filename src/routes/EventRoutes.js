@@ -17,13 +17,15 @@ const {
 const { validaToken } = require("../helpers/auth");
 
 let getEvents = (req, res, next) => {
-  let id = req.params.id;
-  let obj = EventModel.findById(id);
-  if (obj == null) {
+  try {
+    let { id } = req.params;
+    let obj = EventModel.findById(id);
+
+    req.event = obj;
+  } catch (error) {
     res.status(404).json({ status: false, error: "The event was not found!" });
     return;
   }
-  req.event = obj;
   next();
 };
 

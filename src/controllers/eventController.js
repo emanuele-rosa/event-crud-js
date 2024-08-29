@@ -70,7 +70,7 @@ exports.deleteEvent = (req, res) => {
   try {
     const { id } = req.params;
 
-    EventModel.deleteOne({ id: id }).then((event) => {
+    EventModel.findByIdAndDelete(id).then((event) => {
       if (event) {
         res.json({ status: true, msg: "Event deleted successfully!" });
       }
