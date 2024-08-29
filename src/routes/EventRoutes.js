@@ -19,7 +19,7 @@ const { validaToken } = require("../helpers/auth");
 let getEvents = (req, res, next) => {
   try {
     let { id } = req.params;
-    let obj = EventModel.findById(id);
+    let obj = EventModel.getById(id);
 
     req.event = obj;
   } catch (error) {
