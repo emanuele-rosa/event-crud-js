@@ -56,8 +56,8 @@ router.get("/:id", validaToken, getEvents, getEventById);
 
 router.post("/create", validaToken, validaNome, createEvent);
 
-router.put("/", validaToken, validaNome, updateEvent);
+router.put("/update", validaToken, validaNome, updateEvent);
 
-router.delete("/:id", validaToken, getEvents, deleteEvent);
+router.delete("/delete/:id", validaToken, deleteEvent);
 
 module.exports = router;

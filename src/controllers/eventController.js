@@ -68,8 +68,13 @@ exports.updateEvent = async (req, res) => {
 
 exports.deleteEvent = (req, res) => {
   try {
-    EventModel.delete(req.params.id);
-    res.json({ status: true, oldEvent: req.event });
+    const { id } = req.params;
+
+    EventModel.deleteOne({ id: id }).then((event) => {
+      if (event) {
+        res.json({ status: true, msg: "Event deleted successfully!" });
+      }
+    });
   } catch {
     res.json({
       status: false,
