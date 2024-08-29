@@ -21,16 +21,18 @@ exports.createEvent = async (req, res) => {
 };
 
 exports.listEvents = async (req, res) => {
-  if (EventModel.list().length > 0) {
-    res.json({ status: true, list: EventModel.list() });
-  } else {
+  try {
+    let events = await EventModel.find();
+    res.json({ status: true, list: events });
+  } catch (error) {
     res.json({ status: false, error: "No events found!" });
   }
 };
 
 exports.getEventById = async (req, res) => {
   try {
-    res.json({ status: true, event: req.event });
+    let event = await EventModel.findById(req.params.id);
+    res.json({ status: true, event: event });
   } catch {
     res.json({ status: false, error: "Event not found!" });
   }

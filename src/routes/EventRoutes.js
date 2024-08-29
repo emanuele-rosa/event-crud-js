@@ -2,8 +2,6 @@ var express = require("express");
 var router = express.Router();
 var mongoose = require("mongoose");
 
-// var EventModel = require("../model/Events");
-
 const EventSchema = require("../model/Event");
 const EventModel = mongoose.model("Event", EventSchema);
 const {
@@ -58,7 +56,7 @@ let validaNome = (req, res, next) => {
 
 router.get("/", validaToken, listEvents);
 
-router.get("/:id", validaToken, getEvents, getEventById);
+router.get("/:id", validaToken, getEventById);
 
 router.post("/create", validaToken, validaNome, createEvent);
 
