@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const UserSchema = require("../model/User");
 const UserModel = mongoose.model("Usuario", UserSchema);
@@ -12,8 +13,15 @@ exports.userRegister = async (req, res) => {
         .status(409)
         .json({ status: false, error: "User already exists!" });
     }
+    const salt = await bcrypt.genSalt(6);
+    const passwordHash = await bcrypt.hash(password, salt);
 
-    const newUser = new UserModel({ name, password, email, isAdmin });
+    const newUser = new UserModel({
+      name,
+      password: passwordHash,
+      email,
+      isAdmin,
+    });
 
     let token = jwt.sign({ name: newUser.name }, "#aBcDeFgH", {
       expiresIn: "1h",
