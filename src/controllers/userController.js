@@ -36,3 +36,43 @@ exports.userRegister = async (req, res) => {
     res.status(500).json({ status: false, error: "Internal Server Error" });
   }
 };
+
+exports.userLogin = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email) {
+    res.status(422).json({ message: "Email is mandatory!" });
+    return;
+  }
+  if (!password) {
+    res.status(422).json({ message: "Password is mandatory!" });
+    return;
+  }
+
+  const user = await UserModel.findOne({ email: email });
+
+  if (!user) {
+    res.status(422).json({
+      message: "No users found with this email",
+    });
+    return;
+  }
+
+  const checkPassword = await bcrypt.compare(password, user.password);
+
+  if (!checkPassword) {
+    res.status(422).json({
+      message: "Invalid password",
+    });
+    return;
+  }
+
+  await user.save();
+
+  const token = await createUserToken(user, req, res);
+
+  res.status(200).json({
+    message: "Successful login",
+    token: token,
+  });
+};
