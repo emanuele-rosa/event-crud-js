@@ -1,19 +1,19 @@
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const UserSchema = require("../model/User");
-const UsuarioModel = mongoose.model("Usuario", UserSchema);
+const UserModel = mongoose.model("Usuario", UserSchema);
 
 exports.userRegister = async (req, res) => {
   const { name, email, password, isAdmin } = req.body;
   try {
-    const existingUser = await UsuarioModel.findOne({ email });
+    const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       return res
         .status(409)
         .json({ status: false, error: "User already exists!" });
     }
 
-    const newUser = new UsuarioModel({ name, password, email, isAdmin });
+    const newUser = new UserModel({ name, password, email, isAdmin });
 
     let token = jwt.sign({ name: newUser.name }, "#aBcDeFgH", {
       expiresIn: "1h",
