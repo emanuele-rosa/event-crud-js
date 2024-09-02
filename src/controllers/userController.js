@@ -90,3 +90,23 @@ exports.userLogin = async (req, res) => {
     token: token,
   });
 };
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    UserModel.findByIdAndDelete(id).then((event) => {
+      if (event) {
+        res.json({ status: true, msg: "User deleted successfully!" });
+      }
+      if (!event) {
+        res.json({ status: false, error: "User not found!" });
+      }
+    });
+  } catch {
+    res.json({
+      status: false,
+      error: "An error occurred during deletion. Please, try again!",
+    });
+  }
+};
