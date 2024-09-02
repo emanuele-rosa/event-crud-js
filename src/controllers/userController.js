@@ -4,6 +4,20 @@ const mongoose = require("mongoose");
 const UserSchema = require("../model/User");
 const UserModel = mongoose.model("Usuario", UserSchema);
 
+createUserToken = async (user, req, res) => {
+  const token = jwt.sign(
+    {
+      name: user.name,
+    },
+    "secret",
+    {
+      expiresIn: "1h",
+    }
+  );
+
+  return token;
+};
+
 exports.userRegister = async (req, res) => {
   const { name, email, password, isAdmin } = req.body;
   try {
@@ -19,13 +33,12 @@ exports.userRegister = async (req, res) => {
     const newUser = new UserModel({
       name,
       password: passwordHash,
+      confirmPassword: passwordHash,
       email,
       isAdmin,
     });
 
-    let token = jwt.sign({ name: newUser.name }, "#aBcDeFgH", {
-      expiresIn: "1h",
-    });
+    let token = await createUserToken(newUser, req, res);
 
     newUser.token = token;
 
