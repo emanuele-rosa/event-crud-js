@@ -91,6 +91,32 @@ exports.userLogin = async (req, res) => {
   });
 };
 
+exports.updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, password, confirmPassword } = req.body;
+
+    let obj = {};
+    if (name) obj.name = name;
+    if (email) obj.email = email;
+    if (password) obj.password = password;
+    if (confirmPassword) obj.confirmPassword = confirmPassword;
+
+    if (obj == {}) {
+      return res.status(500).json(fail("No changes detected"));
+    }
+
+    const newUser = await UserModel.findByIdAndUpdate(id, obj);
+
+    res.json({ status: true, msg: "User updated}", user: newUser });
+  } catch (error) {
+    res.status(404).json({
+      status: false,
+      error: "An error occurred during the update! Please, try again!",
+    });
+  }
+};
+
 exports.deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -100,7 +126,7 @@ exports.deleteUser = async (req, res) => {
         res.json({ status: true, msg: "User deleted successfully!" });
       }
       if (!event) {
-        res.json({ status: false, error: "User not found!" });
+        res.status(404).json({ status: false, error: "User does not exists!" });
       }
     });
   } catch {
