@@ -121,12 +121,20 @@ exports.deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
 
-    UserModel.findByIdAndDelete(id).then((event) => {
-      if (event) {
+    const user = await UserModel.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ status: false, error: "User not found!" });
+    }
+    if (user.isAdmin === true) {
+      return res
+        .status(403)
+        .json({ status: false, error: "You can't delete an admin user!" });
+    }
+
+    await UserModel.findByIdAndDelete(id).then((user) => {
+      if (user) {
         res.json({ status: true, msg: "User deleted successfully!" });
-      }
-      if (!event) {
-        res.status(404).json({ status: false, error: "User does not exists!" });
       }
     });
   } catch {
