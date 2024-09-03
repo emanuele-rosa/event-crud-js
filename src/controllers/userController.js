@@ -126,6 +126,7 @@ exports.deleteUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({ status: false, error: "User not found!" });
     }
+
     if (user.isAdmin === true) {
       return res
         .status(403)
