@@ -107,8 +107,7 @@ exports.userLogin = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { name, email, password, confirmPassword } = req.body;
+    const { id, name, email, password, confirmPassword } = req.body;
 
     let obj = {};
     if (name) obj.name = name;
@@ -122,7 +121,7 @@ exports.updateUser = async (req, res) => {
 
     const newUser = await UserModel.findByIdAndUpdate(id, obj);
 
-    res.json({ status: true, msg: "User updated}", user: newUser });
+    res.json({ status: true, msg: "User updated", user: newUser });
   } catch (error) {
     res.status(404).json({
       status: false,
