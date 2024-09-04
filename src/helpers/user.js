@@ -1,17 +1,25 @@
+const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const UserSchema = require("../model/User");
 const UserModel = mongoose.model("Usuario", UserSchema);
 
 exports.userIsAdmin = async (req, res, next) => {
-  const { email } = req.body;
+  try {
+    const token = req.headers["authorization"].split(" ")[1];
 
-  const user = await UserModel.findOne({ email });
+    const decoded = jwt.verify(token, "secret");
+    req.user = decoded;
 
-  if (user?.isAdmin === false) {
-    return res.status(403).json({
-      status: false,
-      error: "Non-administrator users cannot delete other users",
-    });
+    const user = UserModel.findOne({ token: token });
+
+    if (user?.isAdmin === false) {
+      return res.status(403).json({
+        status: false,
+        error: "Non-administrator users are not allowed to access this route",
+      });
+    }
+    next();
+  } catch (error) {
+    res.status(401).json({ status: false, error: "Unauthorized" });
   }
-  next();
 };
