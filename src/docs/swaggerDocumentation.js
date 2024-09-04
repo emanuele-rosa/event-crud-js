@@ -1,80 +1,135 @@
 /**
  * @swagger
+ * /:
+ *   get:
+ *     description: Welcome message for the events management API
+ *     responses:
+ *       200:
+ *         description: Sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                 msg:
+ *                   type: string
+ */
+
+/**
+ * @swagger
  * /login:
  *   post:
- *     description: Faz login do usuário
+ *     description: User login
  *     responses:
  *       200:
- *         description: Sucesso no login
+ *         description: Sucesso
  */
 
 /**
  * @swagger
- * /:
- *   get:
- *     description: Lista todos os eventos
- *     responses:
- *       200:
- *         description: Lista de eventos
- */
-
-/**
- * @swagger
- * /{id}:
- *   get:
- *     description: Obtém um evento pelo ID
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         description: ID do evento
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Evento encontrado
- */
-
-/**
- * @swagger
- * /:
+ * /register:
  *   post:
- *     description: Cria um novo evento
+ *     description: User registration
  *     responses:
- *       201:
- *         description: Evento criado com sucesso
+ *       200:
+ *         description: Sucesso
  */
 
 /**
  * @swagger
- * /{id}:
+ * /update/:
  *   put:
- *     description: Atualiza um evento pelo ID
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         description: ID do evento
- *         schema:
- *           type: string
+ *     description: Update user information
  *     responses:
  *       200:
- *         description: Evento atualizado com sucesso
+ *         description: Sucesso
+ */
+e;
+/**
+ * @swagger
+ * /events/:
+ *   get:
+ *     description: List all events
+ *     responses:
+ *       200:
+ *         description: Sucesso
  */
 
 /**
  * @swagger
- * /{id}:
- *   delete:
- *     description: Deleta um evento pelo ID
+ * /events/{id}:
+ *   get:
+ *     description: Get event by ID
  *     parameters:
  *       - name: id
  *         in: path
  *         required: true
- *         description: ID do evento
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: Evento deletado com sucesso
+ *         description: Sucesso
+ */
+
+/**
+ * @swagger
+ * /events/create:
+ *   post:
+ *     description: Create a new event
+ *     responses:
+ *       200:
+ *         description: Sucesso
+ */
+
+/**
+ * @swagger
+ * /events/update:
+ *   put:
+ *     description: Update an event
+ *     responses:
+ *       200:
+ *         description: Sucesso
+ */
+
+/**
+ * @swagger
+ * /events/delete/{id}:
+ *   delete:
+ *     description: Delete an event by ID
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Sucesso
+ */
+/**
+ * @swagger
+ * /admin/createAdmin:
+ *   patch:
+ *     description: Create a new admin
+ *     responses:
+ *       200:
+ *         description: Sucesso
+ */
+
+/**
+ * @swagger
+ * /admin/delete/{id}:
+ *   delete:
+ *     description: Delete a user by ID
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Sucesso
  */
