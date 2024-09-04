@@ -19,7 +19,7 @@ createUserToken = async (user, req, res) => {
 };
 
 exports.userRegister = async (req, res) => {
-  const { name, email, password, isAdmin } = req.body;
+  const { name, email, password } = req.body;
   try {
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
@@ -36,7 +36,7 @@ exports.userRegister = async (req, res) => {
       password: passwordHash,
       confirmPassword: passwordHash,
       email,
-      isAdmin,
+      isAdmin: false,
     });
 
     let token = await createUserToken(newUser, req, res);
@@ -48,6 +48,20 @@ exports.userRegister = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ status: false, error: "Internal Server Error" });
+  }
+};
+
+exports.createAdmin = async (req, res) => {
+  const { id } = req.body;
+  try {
+    await UserModel.findByIdAndUpdate(id, { isAdmin: true });
+
+    return res.json({ status: true, msg: "Admin created successfully!" });
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      error: "An error occurred during the admin creation! Please, try again!",
+    });
   }
 };
 
