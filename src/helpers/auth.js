@@ -5,7 +5,7 @@ exports.validaToken = async (req, res, next) => {
 
   let cleanedToken = token.split(" ")[1];
 
-  jwt.verify(cleanedToken, "#aBcDeFgH", (err, decoded) => {
+  jwt.verify(cleanedToken, "secret", (err, decoded) => {
     if (err) {
       res.status(401).json({ status: false, error: "Invalid token!" });
     } else {

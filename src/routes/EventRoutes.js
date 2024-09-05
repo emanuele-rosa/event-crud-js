@@ -14,19 +14,6 @@ const {
 
 const { validaToken } = require("../helpers/auth");
 
-let getEvents = (req, res, next) => {
-  try {
-    let { id } = req.params;
-    let obj = EventModel.getById(id);
-
-    req.event = obj;
-  } catch (error) {
-    res.status(404).json({ status: false, error: "The event was not found!" });
-    return;
-  }
-  next();
-};
-
 let validaNome = (req, res, next) => {
   let { name, description, place } = req.body;
   if (name == undefined || name == null || name == "") {
@@ -60,8 +47,8 @@ router.get("/:id", validaToken, getEventById);
 
 router.post("/create", validaToken, validaNome, createEvent);
 
-router.put("/update", validaToken, getEvents, validaNome, updateEvent);
+router.put("/update", validaToken, validaNome, updateEvent);
 
-router.delete("/delete/:id", getEvents, validaToken, deleteEvent);
+router.delete("/delete/:id", validaToken, deleteEvent);
 
 module.exports = router;
