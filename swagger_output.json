@@ -10,10 +10,27 @@
   "schemes": [
     "http"
   ],
+  "tags": [
+    {
+      "name": "Admin",
+      "description": "Operation related to administrators"
+    },
+    {
+      "name": "User",
+      "description": "Operation related to users"
+    },
+    {
+      "name": "Event",
+      "description": "Operation related to events"
+    }
+  ],
   "paths": {
     "/createAdmin": {
       "patch": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Users already created become administrators",
         "parameters": [
           {
             "name": "authorization",
@@ -51,7 +68,10 @@
     },
     "/delete/{id}": {
       "delete": {
-        "description": "",
+        "tags": [
+          "Event"
+        ],
+        "summary": "Delete events",
         "parameters": [
           {
             "name": "id",
@@ -83,7 +103,10 @@
     },
     "/register": {
       "post": {
-        "description": "",
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Administrators create new users",
         "parameters": [
           {
             "name": "body",
@@ -119,7 +142,10 @@
     },
     "/update/": {
       "put": {
-        "description": "",
+        "tags": [
+          "User"
+        ],
+        "summary": "Update users informations",
         "parameters": [
           {
             "name": "body",
@@ -161,7 +187,10 @@
     },
     "/": {
       "get": {
-        "description": "",
+        "tags": [
+          "Root"
+        ],
+        "summary": "Initial page",
         "responses": {
           "200": {
             "description": "OK"
@@ -174,7 +203,10 @@
     },
     "/{id}": {
       "get": {
-        "description": "",
+        "tags": [
+          "Event"
+        ],
+        "summary": "Get a specific event",
         "parameters": [
           {
             "name": "id",
@@ -200,7 +232,10 @@
     },
     "/create": {
       "post": {
-        "description": "",
+        "tags": [
+          "Event"
+        ],
+        "summary": "Administrators can create new events",
         "parameters": [
           {
             "name": "authorization",
@@ -244,7 +279,10 @@
     },
     "/update": {
       "put": {
-        "description": "",
+        "tags": [
+          "Event"
+        ],
+        "summary": "Update events",
         "parameters": [
           {
             "name": "authorization",
@@ -294,7 +332,10 @@
     },
     "/login": {
       "post": {
-        "description": "",
+        "tags": [
+          "User"
+        ],
+        "summary": "Users login",
         "parameters": [
           {
             "name": "body",
