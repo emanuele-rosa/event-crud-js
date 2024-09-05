@@ -1,9 +1,6 @@
 var express = require("express");
 var router = express.Router();
-var mongoose = require("mongoose");
 
-const EventSchema = require("../model/Event");
-const EventModel = mongoose.model("Event", EventSchema);
 const {
   createEvent,
   getEventById,
