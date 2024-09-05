@@ -20,6 +20,7 @@ exports.userIsAdmin = async (req, res, next) => {
     }
     next();
   } catch (error) {
+    console.log(error);
     res.status(401).json({
       status: false,
       error: "An error occured when validating administrator access",

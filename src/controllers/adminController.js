@@ -2,6 +2,42 @@ const mongoose = require("mongoose");
 const UserSchema = require("../model/User");
 const UserModel = mongoose.model("User", UserSchema);
 
+exports.getUsers = async (req, res) => {
+  try {
+    const users = await UserModel.find();
+
+    if (users.length === 0) {
+      return res.status(404).json({ status: false, error: "No users found!" });
+    }
+
+    res.json({ status: true, users });
+  } catch {
+    res.status(400).json({
+      status: false,
+      error: "An error occurred while fetching the users!",
+    });
+  }
+};
+
+exports.getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await UserModel.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ status: false, error: "User not found!" });
+    }
+
+    res.json({ status: true, user: user });
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      error: "An error occurred while fetching the user!",
+    });
+  }
+};
+
 exports.createAdmin = async (req, res) => {
   const { id } = req.body;
   try {
