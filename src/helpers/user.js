@@ -1,13 +1,13 @@
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const UserSchema = require("../model/User");
-const UserModel = mongoose.model("Usuario", UserSchema);
+const UserModel = mongoose.model("User", UserSchema);
 
 exports.userIsAdmin = async (req, res, next) => {
   try {
     const token = req.headers["authorization"].split(" ")[1];
 
-    const decoded = jwt.verify(token, "secret");
+    const decoded = jwt.verify(token, process.env.NEXT_PUBLIC_SECRET_KEY);
     req.user = decoded;
 
     const user = UserModel.findOne({ token: token });

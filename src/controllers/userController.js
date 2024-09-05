@@ -2,14 +2,14 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const UserSchema = require("../model/User");
-const UserModel = mongoose.model("Usuario", UserSchema);
+const UserModel = mongoose.model("User", UserSchema);
 
 createUserToken = async (user, req, res) => {
   const token = jwt.sign(
     {
-      name: user.name,
+      name: user.email,
     },
-    "secret",
+    process.env.NEXT_PUBLIC_SECRET_KEY,
     {
       expiresIn: "1h",
     }

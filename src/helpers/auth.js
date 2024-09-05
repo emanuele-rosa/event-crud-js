@@ -5,12 +5,16 @@ exports.validaToken = async (req, res, next) => {
 
   let cleanedToken = token.split(" ")[1];
 
-  jwt.verify(cleanedToken, "secret", (err, decoded) => {
-    if (err) {
-      res.status(401).json({ status: false, error: "Invalid token!" });
-    } else {
-      req.user = decoded.user;
-      next();
+  jwt.verify(
+    cleanedToken,
+    process.env.NEXT_PUBLIC_SECRET_KEY,
+    (err, decoded) => {
+      if (err) {
+        res.status(401).json({ status: false, error: "Invalid token!" });
+      } else {
+        req.user = decoded.user;
+        next();
+      }
     }
-  });
+  );
 };
