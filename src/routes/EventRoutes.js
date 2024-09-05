@@ -10,42 +10,16 @@ const {
 } = require("../controllers/eventController");
 
 const { validaToken } = require("../helpers/auth");
-
-let validaNome = (req, res, next) => {
-  let { name, description, place } = req.body;
-  if (name == undefined || name == null || name == "") {
-    res
-      .status(400)
-      .json({ status: false, error: "The name of the event is required!" });
-  }
-
-  if (name.length < 3) {
-    res.status(400).json({
-      status: false,
-      error: "The name of the event must have at least 3 characters!",
-    });
-  }
-
-  if (place == undefined || place == null || place == "") {
-    res
-      .status(400)
-      .json({ status: false, error: "The place of the event is required!" });
-  }
-
-  req.name = name;
-  req.description = description;
-  req.place = place;
-  next();
-};
+const { findEvent } = require("../helpers/event");
 
 router.get("/", validaToken, listEvents);
 
 router.get("/:id", validaToken, getEventById);
 
-router.post("/create", validaToken, validaNome, createEvent);
+router.post("/create", validaToken, validateName, createEvent);
 
-router.put("/update", validaToken, validaNome, updateEvent);
+router.put("/update/:id", findEvent, validaToken, validateName, updateEvent);
 
-router.delete("/delete/:id", validaToken, deleteEvent);
+router.delete("/delete/:id", findEvent, validaToken, deleteEvent);
 
 module.exports = router;

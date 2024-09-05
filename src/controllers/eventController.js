@@ -32,9 +32,14 @@ exports.listEvents = async (req, res) => {
 exports.getEventById = async (req, res) => {
   try {
     let event = await EventModel.findById(req.params.id);
+
+    if (event === null) {
+      return res.json({ status: false, error: "Event not found!" });
+    }
+
     res.json({ status: true, event: event });
   } catch {
-    res.json({ status: false, error: "Event not found!" });
+    res.json({ status: false, error: "An error occurred. Please try again!" });
   }
 };
 
@@ -43,23 +48,16 @@ exports.updateEvent = async (req, res) => {
     const { id } = req.params;
     const { name, place, date, description } = req.body;
 
-    let obj = {};
-    if (name) obj.name = name;
-    if (place) obj.place = place;
-    if (date) obj.date = date;
-    if (description) obj.description = description;
+    const newEvent = {
+      name: name,
+      place: place,
+      date: date,
+      description: description,
+    };
 
-    if (obj == {}) {
-      return res.status(500).json(fail("No changes detected"));
-    }
+    await EventModel.findByIdAndUpdate(id, newEvent);
 
-    EventModel.updateOne(id, obj).then((event) => {
-      if (event) {
-        res.json({ status: true, msg: "Event updated successfully!" });
-      } else {
-        res.json({ status: false, error: "Event not found!" });
-      }
-    });
+    res.json({ status: true, msg: "Event updated successfully!" });
   } catch {
     res.json({
       status: false,
@@ -68,11 +66,11 @@ exports.updateEvent = async (req, res) => {
   }
 };
 
-exports.deleteEvent = (req, res) => {
+exports.deleteEvent = async (req, res) => {
   try {
     const { id } = req.params;
 
-    EventModel.findByIdAndDelete(id).then((event) => {
+    await EventModel.findByIdAndDelete(id).then((event) => {
       if (event) {
         res.json({ status: true, msg: "Event deleted successfully!" });
       }
