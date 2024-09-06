@@ -3,6 +3,27 @@ const mongoose = require("mongoose");
 const UserSchema = require("../model/User");
 const UserModel = mongoose.model("User", UserSchema);
 
+exports.findById = async (req, res, next) => {
+  try {
+    let { id } = req.params;
+
+    const event = await UserModel.findById(id);
+
+    if (event === null) {
+      return res
+        .status(404)
+        .json({ status: false, error: "User doesn't exists" });
+    }
+
+    next();
+  } catch {
+    return res.status(404).json({
+      status: false,
+      error: "An error occurred while locating the user",
+    });
+  }
+};
+
 exports.userIsAdmin = async (req, res, next) => {
   try {
     const token = req.headers["authorization"].split(" ")[1];
@@ -20,10 +41,16 @@ exports.userIsAdmin = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    console.log(error);
     res.status(401).json({
       status: false,
       error: "An error occured when validating administrator access",
     });
   }
+};
+
+exports.compareHashPassword = async (req, res) => {
+  
+  (password, confirmPassword) => {
+    return bcrypt.compare(password, confirmPassword);
+  };
 };

@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-exports.validaToken = async (req, res, next) => {
+exports.validateToken = async (req, res, next) => {
   try {
     let token = req.headers["authorization"];
 
@@ -19,11 +19,9 @@ exports.validaToken = async (req, res, next) => {
       }
     );
   } catch (error) {
-    res
-      .status(401)
-      .json({
-        status: false,
-        error: "An error occured when validating the token",
-      });
+    res.status(401).json({
+      status: false,
+      error: "An error occured when validating the token",
+    });
   }
 };
