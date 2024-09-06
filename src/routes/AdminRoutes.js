@@ -8,13 +8,14 @@ const {
   deleteUser,
 } = require("../controllers/adminController");
 const { userIsAdmin } = require("../helpers/user");
+const { validateToken } = require("../helpers/auth");
 
-router.get("/users", userIsAdmin, getUsers);
+router.get("/users", validateToken, userIsAdmin, getUsers);
 
-router.get("/users/:id", userIsAdmin, getUserById);
+router.get("/users/:id", validateToken, userIsAdmin, getUserById);
 
-router.patch("/createAdmin", userIsAdmin, createAdmin);
+router.patch("/createAdmin", validateToken, userIsAdmin, createAdmin);
 
-router.delete("/delete/:id", userIsAdmin, deleteUser);
+router.delete("/delete/:id", validateToken, userIsAdmin, deleteUser);
 
 module.exports = router;
