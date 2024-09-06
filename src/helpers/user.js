@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
 const UserSchema = require("../model/User");
 const UserModel = mongoose.model("User", UserSchema);
@@ -48,9 +49,26 @@ exports.userIsAdmin = async (req, res, next) => {
   }
 };
 
-exports.compareHashPassword = async (req, res) => {
-  
-  (password, confirmPassword) => {
-    return bcrypt.compare(password, confirmPassword);
-  };
+exports.compareHashPassword = async (req, res, next) => {
+  try {
+    const { password, confirmPassword } = req.body;
+
+    const salt = await bcrypt.genSalt(6);
+    const confirmPasswordHash = await bcrypt.hash(confirmPassword, salt);
+
+    const matchPasswords = await bcrypt.compare(password, confirmPasswordHash);
+
+    if (matchPasswords === false) {
+      return res.status(400).json({
+        status: false,
+        error: "Password and Confirm Password do not match",
+      });
+    }
+    next();
+  } catch (error) {
+    return res.status(400).json({
+      status: false,
+      error: "An error occurred while comparing the passwords",
+    });
+  }
 };

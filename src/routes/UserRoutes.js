@@ -3,10 +3,16 @@ var router = express.Router();
 
 const { userRegister, updateUser } = require("../controllers/userController");
 const { validateToken } = require("../helpers/auth");
-const { findById } = require("../helpers/user");
+const { findById, compareHashPassword } = require("../helpers/user");
 
-router.post("/register", validateToken, userRegister);
+router.post("/register", compareHashPassword, validateToken, userRegister);
 
-router.put("/update/:id", findById, validateToken, updateUser);
+router.put(
+  "/update/:id",
+  findById,
+  validateToken,
+  compareHashPassword,
+  updateUser
+);
 
 module.exports = router;
