@@ -24,11 +24,16 @@ exports.createAdminUser = async (user, req, res) => {
         process.env.ADMIN_PASSWORD,
         salt
       );
+      const hashedConfirmPassword = await bcrypt.hash(
+        process.env.ADMIN_PASSWORD,
+        salt
+      );
 
       const adminUser = await new UserModel({
         name: "Admin",
         email: adminEmail,
         password: hashedPassword,
+        confirmPassword: hashedConfirmPassword,
         isAdmin: true,
         token: token,
       });
@@ -45,9 +50,10 @@ exports.createAdminUser = async (user, req, res) => {
       });
     }
   } catch (error) {
+    console.log(error);
     return req.status(500).json({
       status: false,
-      error: "Internal Server Error",
+      error: "An error occured during admin user creation",
     });
   }
 };
