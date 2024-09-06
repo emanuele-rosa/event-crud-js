@@ -111,47 +111,20 @@ exports.updateUser = async (req, res) => {
     const { id } = req.params;
     const { name, email, password, confirmPassword } = req.body;
 
-    const token = req.headers["authorization"].split(" ")[1];
+    const salt = await bcrypt.genSalt(6);
+    const passwordHash = await bcrypt.hash(password, salt);
+    const confirmPasswordHash = await bcrypt.hash(confirmPassword, salt);
 
-    const decoded = await jwt.verify(token, process.env.NEXT_PUBLIC_SECRET_KEY);
-    const decodedName = decoded?.name;
+    const userId = id;
+    const newUser = {
+      name: name,
+      email: email,
+      password: passwordHash,
+      confirmPassword: confirmPasswordHash,
+    };
 
-    const currentUser = await UserModel.findOne({ email: decodedName });
-
-    if (currentUser?.isAdmin == true) {
-      const salt = await bcrypt.genSalt(6);
-      const passwordHash = await bcrypt.hash(password, salt);
-      const confirmPasswordHash = await bcrypt.hash(confirmPassword, salt);
-
-      const newUser = {
-        name: name,
-        email: email,
-        password: passwordHash,
-        confirmPassword: confirmPasswordHash,
-      };
-
-      await UserModel.findByIdAndUpdate(id, newUser);
-
-      return res.json({ status: true, msg: "User updated", user: newUser });
-    }
-
-    if (currentUser?.id == id) {
-      const userId = currentUser?.id;
-      const newUser = {
-        name: name,
-        email: email,
-        password: password,
-        confirmPassword: confirmPassword,
-      };
-
-      await UserModel.findByIdAndUpdate(userId, newUser);
-      return res.json({ status: true, msg: "User updated", user: newUser });
-    } else {
-      return res.status(403).json({
-        status: false,
-        error: "You don't have permission to update this user!",
-      });
-    }
+    await UserModel.findByIdAndUpdate(userId, newUser);
+    return res.json({ status: true, msg: "User updated", user: newUser });
   } catch (error) {
     return res.status(404).json({
       status: false,
