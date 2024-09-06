@@ -5,21 +5,27 @@ const UserSchema = require("../model/User");
 const UserModel = mongoose.model("User", UserSchema);
 
 createUserToken = async (user, req, res) => {
-  const token = jwt.sign(
-    {
-      name: user.email,
-    },
-    process.env.NEXT_PUBLIC_SECRET_KEY,
-    {
-      expiresIn: "1h",
-    }
-  );
+  try {
+    const token = jwt.sign(
+      {
+        name: user.email,
+      },
+      process.env.NEXT_PUBLIC_SECRET_KEY,
+      {
+        expiresIn: "1h",
+      }
+    );
 
-  return token;
+    return token;
+  } catch (error) {
+    res
+      .status(400)
+      .json({ status: false, error: "An error occured when creating token" });
+  }
 };
 
 exports.userRegister = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, confirmPassword } = req.body;
   try {
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
@@ -28,13 +34,15 @@ exports.userRegister = async (req, res) => {
         error: "There is already a user with this e-mail!",
       });
     }
+
     const salt = await bcrypt.genSalt(6);
     const passwordHash = await bcrypt.hash(password, salt);
+    const confirmPasswordHash = await bcrypt.hash(confirmPassword, salt);
 
     const newUser = new UserModel({
       name,
       password: passwordHash,
-      confirmPassword: passwordHash,
+      confirmPassword: confirmPasswordHash,
       email,
       isAdmin: false,
     });
@@ -46,49 +54,52 @@ exports.userRegister = async (req, res) => {
     await newUser.save();
     res.json({ status: true, token: token });
   } catch (error) {
-    console.error(error);
     res.status(500).json({ status: false, error: "Internal Server Error" });
   }
 };
 
 exports.userLogin = async (req, res) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  if (!email) {
-    res.status(422).json({ message: "Email is mandatory!" });
-    return;
-  }
-  if (!password) {
-    res.status(422).json({ message: "Password is mandatory!" });
-    return;
-  }
+    if (!email) {
+      res.status(422).json({ message: "Email is mandatory!" });
+      return;
+    }
+    if (!password) {
+      res.status(422).json({ message: "Password is mandatory!" });
+      return;
+    }
 
-  const user = await UserModel.findOne({ email: email });
+    const user = await UserModel.findOne({ email: email });
 
-  if (!user) {
-    res.status(422).json({
-      message: "No users found with this email",
+    if (!user) {
+      res.status(422).json({
+        message: "No users found with this email",
+      });
+      return;
+    }
+
+    const checkPassword = await bcrypt.compare(password, user.password);
+
+    if (!checkPassword) {
+      res.status(422).json({
+        message: "Invalid password",
+      });
+      return;
+    }
+
+    await user.save();
+
+    const token = await createUserToken(user, req, res);
+
+    res.status(200).json({
+      message: "Successful login",
+      token: token,
     });
-    return;
+  } catch (error) {
+    res.status(400).json({ message: "An error occured during the login" });
   }
-
-  const checkPassword = await bcrypt.compare(password, user.password);
-
-  if (!checkPassword) {
-    res.status(422).json({
-      message: "Invalid password",
-    });
-    return;
-  }
-
-  await user.save();
-
-  const token = await createUserToken(user, req, res);
-
-  res.status(200).json({
-    message: "Successful login",
-    token: token,
-  });
 };
 
 exports.updateUser = async (req, res) => {
@@ -98,13 +109,12 @@ exports.updateUser = async (req, res) => {
 
     const token = req.headers["authorization"].split(" ")[1];
 
-    const decoded = jwt.verify(token, process.env.NEXT_PUBLIC_SECRET_KEY);
+    const decoded = await jwt.verify(token, process.env.NEXT_PUBLIC_SECRET_KEY);
     const decodedName = decoded?.name;
 
     const currentUser = await UserModel.findOne({ email: decodedName });
 
     if (currentUser?.isAdmin == true) {
-
       const salt = await bcrypt.genSalt(6);
       const passwordHash = await bcrypt.hash(password, salt);
       const confirmPasswordHash = await bcrypt.hash(confirmPassword, salt);
