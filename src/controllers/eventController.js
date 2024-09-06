@@ -1,11 +1,30 @@
+const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
 const EventSchema = require("../model/Event");
 const EventModel = mongoose.model("Event", EventSchema);
+const UserSchema = require("../model/User");
+const UserModel = mongoose.model("User", UserSchema);
 
 exports.createEvent = async (req, res) => {
   try {
+    let token = req.headers["authorization"];
+
+    let cleanedToken = token.split(" ")[1];
+
+    const decoded = jwt.verify(
+      cleanedToken,
+      process.env.NEXT_PUBLIC_SECRET_KEY
+    );
+    const author = await UserModel.findOne({ email: decoded?.name });
+
     const { name, place, date, description } = req.body;
-    const newEvent = new EventModel({ name, place, date, description });
+    const newEvent = new EventModel({
+      name,
+      place,
+      date,
+      description,
+      createdBy: author.id,
+    });
     await newEvent.save();
 
     return res.json({
@@ -13,7 +32,7 @@ exports.createEvent = async (req, res) => {
       event: newEvent,
     });
   } catch (error) {
-    return res.json({
+    return res.status(400).json({
       status: false,
       error: "An error occurred while creating the event. Please, try again!",
     });
