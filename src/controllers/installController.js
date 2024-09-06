@@ -7,8 +7,6 @@ const bcrypt = require("bcrypt");
 
 exports.install = async (req, res) => {
   try {
-    await UserSchema.deleteMany({});
-    await EventSchema.deleteMany({});
 
     const initialUsers = [
       {
