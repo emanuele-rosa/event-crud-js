@@ -34,7 +34,7 @@ exports.getEventById = async (req, res) => {
     let event = await EventModel.findById(req.params.id);
 
     if (event === null) {
-      return res.json({ status: false, error: "Event not found!" });
+      return res.status(404).json({ status: false, error: "Event not found!" });
     }
 
     res.json({ status: true, event: event });
