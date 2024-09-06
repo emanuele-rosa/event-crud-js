@@ -10,9 +10,9 @@ exports.getUsers = async (req, res) => {
       return res.status(404).json({ status: false, error: "No users found!" });
     }
 
-    res.json({ status: true, users });
-  } catch {
-    res.status(400).json({
+    return res.json({ status: true, users });
+  } catch (error) {
+    return res.status(400).json({
       status: false,
       error: "An error occurred while fetching the users!",
     });
@@ -29,9 +29,9 @@ exports.getUserById = async (req, res) => {
       return res.status(404).json({ status: false, error: "User not found!" });
     }
 
-    res.json({ status: true, user: user });
+    return res.json({ status: true, user: user });
   } catch (error) {
-    res.status(400).json({
+    return res.status(400).json({
       status: false,
       error: "An error occurred while fetching the user!",
     });
@@ -45,7 +45,7 @@ exports.createAdmin = async (req, res) => {
 
     return res.json({ status: true, msg: "Admin created successfully!" });
   } catch (error) {
-    res.status(400).json({
+    return res.status(400).json({
       status: false,
       error: "An error occurred during the admin creation! Please, try again!",
     });
@@ -73,7 +73,7 @@ exports.deleteUser = async (req, res) => {
         return res.json({ status: true, msg: "User deleted successfully!" });
       }
     });
-  } catch {
+  } catch (error) {
     return res.json({
       status: false,
       error: "An error occurred during deletion. Please, try again!",

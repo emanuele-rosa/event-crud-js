@@ -39,7 +39,7 @@ exports.userRegister = async (req, res) => {
     const passwordHash = await bcrypt.hash(password, salt);
     const confirmPasswordHash = await bcrypt.hash(confirmPassword, salt);
 
-    const newUser = new UserModel({
+    const newUser = await new UserModel({
       name,
       password: passwordHash,
       confirmPassword: confirmPasswordHash,
@@ -52,9 +52,11 @@ exports.userRegister = async (req, res) => {
     newUser.token = token;
 
     await newUser.save();
-    res.json({ status: true, token: token });
+    return res.json({ status: true, token: token });
   } catch (error) {
-    res.status(500).json({ status: false, error: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ status: false, error: "Internal Server Error" });
   }
 };
 
@@ -63,18 +65,18 @@ exports.userLogin = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email) {
-      res.status(422).json({ message: "Email is mandatory!" });
+      return res.status(422).json({ message: "Email is mandatory!" });
       return;
     }
     if (!password) {
-      res.status(422).json({ message: "Password is mandatory!" });
+      return res.status(422).json({ message: "Password is mandatory!" });
       return;
     }
 
     const user = await UserModel.findOne({ email: email });
 
     if (!user) {
-      res.status(422).json({
+      return res.status(422).json({
         message: "No users found with this email",
       });
       return;
@@ -83,7 +85,7 @@ exports.userLogin = async (req, res) => {
     const checkPassword = await bcrypt.compare(password, user.password);
 
     if (!checkPassword) {
-      res.status(422).json({
+      return res.status(422).json({
         message: "Invalid password",
       });
       return;
@@ -93,12 +95,14 @@ exports.userLogin = async (req, res) => {
 
     const token = await createUserToken(user, req, res);
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Successful login",
       token: token,
     });
   } catch (error) {
-    res.status(400).json({ message: "An error occured during the login" });
+    return res
+      .status(400)
+      .json({ message: "An error occured during the login" });
   }
 };
 

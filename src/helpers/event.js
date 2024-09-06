@@ -15,7 +15,7 @@ exports.findEvent = async (req, res, next) => {
     }
 
     next();
-  } catch {
+  } catch (error) {
     return res.status(404).json({
       status: false,
       error: "An error occurred while locating the event",
@@ -33,7 +33,7 @@ exports.validateName = (req, res, next) => {
     }
 
     if (name.length < 3) {
-      res.status(400).json({
+      return res.status(400).json({
         status: false,
         error: "The name of the event must have at least 3 characters!",
       });
@@ -50,7 +50,7 @@ exports.validateName = (req, res, next) => {
     req.place = place;
     next();
   } catch (error) {
-    res.status(400).json({
+    return res.status(400).json({
       status: false,
       error: "An error occurred while validating the event",
     });

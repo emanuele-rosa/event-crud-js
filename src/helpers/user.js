@@ -17,12 +17,44 @@ exports.findById = async (req, res, next) => {
     }
 
     next();
-  } catch {
+  } catch (error) {
     return res.status(404).json({
       status: false,
       error: "An error occurred while locating the user",
     });
   }
+};
+
+exports.userRequirements = async (req, res, next) => {
+  try {
+    const { name, email, password } = req.body;
+
+    if (name.length < 3) {
+      return res.status(400).json({
+        status: false,
+        error: "Name must be at least 3 characters",
+      });
+    }
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      return res.status(400).json({
+        status: false,
+        error: "Invalid email format",
+      });
+    }
+    if (password.length < 6) {
+      return res.status(400).json({
+        status: false,
+        error: "Password must be at least 6 characters",
+      });
+    }
+    if (!/[A-Z]/.test(password)) {
+      return res.status(400).json({
+        status: false,
+        error: "Password must contain at least one uppercase letter",
+      });
+    }
+    next();
+  } catch (error) {}
 };
 
 exports.userIsAdmin = async (req, res, next) => {
@@ -42,7 +74,7 @@ exports.userIsAdmin = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    res.status(401).json({
+    return res.status(401).json({
       status: false,
       error: "An error occured when validating administrator access",
     });

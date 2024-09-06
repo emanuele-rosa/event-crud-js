@@ -8,12 +8,12 @@ exports.createEvent = async (req, res) => {
     const newEvent = new EventModel({ name, place, date, description });
     await newEvent.save();
 
-    res.json({
+    return res.json({
       status: true,
       event: newEvent,
     });
-  } catch {
-    res.json({
+  } catch (error) {
+    return res.json({
       status: false,
       error: "An error occurred while creating the event. Please, try again!",
     });
@@ -23,9 +23,9 @@ exports.createEvent = async (req, res) => {
 exports.listEvents = async (req, res) => {
   try {
     let events = await EventModel.find();
-    res.json({ status: true, list: events });
+    return res.json({ status: true, list: events });
   } catch (error) {
-    res.json({ status: false, error: "No events found!" });
+    return res.json({ status: false, error: "No events found!" });
   }
 };
 
@@ -38,7 +38,7 @@ exports.getEventById = async (req, res) => {
     }
 
     res.json({ status: true, event: event });
-  } catch {
+  } catch (error) {
     res.json({ status: false, error: "An error occurred. Please try again!" });
   }
 };
@@ -58,7 +58,7 @@ exports.updateEvent = async (req, res) => {
     await EventModel.findByIdAndUpdate(id, newEvent);
 
     res.json({ status: true, msg: "Event updated successfully!" });
-  } catch {
+  } catch (error) {
     res.json({
       status: false,
       error: "An error occurred during the update! Please, try again!",
@@ -75,7 +75,7 @@ exports.deleteEvent = async (req, res) => {
         res.json({ status: true, msg: "Event deleted successfully!" });
       }
     });
-  } catch {
+  } catch (error) {
     res.json({
       status: false,
       error: "An error occurred during deletion. Please, try again!",

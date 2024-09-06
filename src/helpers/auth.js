@@ -11,7 +11,9 @@ exports.validateToken = async (req, res, next) => {
       process.env.NEXT_PUBLIC_SECRET_KEY,
       (err, decoded) => {
         if (err) {
-          res.status(401).json({ status: false, error: "Invalid token!" });
+          return res
+            .status(401)
+            .json({ status: false, error: "Invalid token!" });
         } else {
           req.user = decoded.user;
           next();
@@ -19,7 +21,7 @@ exports.validateToken = async (req, res, next) => {
       }
     );
   } catch (error) {
-    res.status(401).json({
+    return res.status(401).json({
       status: false,
       error: "An error occured when validating the token",
     });

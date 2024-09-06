@@ -3,9 +3,19 @@ var router = express.Router();
 
 const { userRegister, updateUser } = require("../controllers/userController");
 const { validateToken } = require("../helpers/auth");
-const { findById, compareHashPassword } = require("../helpers/user");
+const {
+  findById,
+  compareHashPassword,
+  userRequirements,
+} = require("../helpers/user");
 
-router.post("/register", compareHashPassword, validateToken, userRegister);
+router.post(
+  "/register",
+  compareHashPassword,
+  validateToken,
+  userRequirements,
+  userRegister
+);
 
 router.put(
   "/update/:id",
