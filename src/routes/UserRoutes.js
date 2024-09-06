@@ -11,16 +11,16 @@ const {
 
 router.post(
   "/register",
-  compareHashPassword,
   validateToken,
+  compareHashPassword,
   userRequirements,
   userRegister
 );
 
 router.put(
   "/update/:id",
-  findById,
   validateToken,
+  findById,
   compareHashPassword,
   updateUser
 );

@@ -18,8 +18,8 @@ router.get("/:id", validateToken, getEventById);
 
 router.post("/create", validateToken, validateName, createEvent);
 
-router.put("/update/:id", findEvent, validateToken, validateName, updateEvent);
+router.put("/update/:id", validateToken, findEvent, validateName, updateEvent);
 
-router.delete("/delete/:id", findEvent, validateToken, deleteEvent);
+router.delete("/delete/:id", validateToken, findEvent, deleteEvent);
 
 module.exports = router;
