@@ -93,23 +93,53 @@ exports.userLogin = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   try {
-    const { id, name, email, password, confirmPassword } = req.body;
+    const { id } = req.params;
+    const { name, email, password, confirmPassword } = req.body;
 
-    let obj = {};
-    if (name) obj.name = name;
-    if (email) obj.email = email;
-    if (password) obj.password = password;
-    if (confirmPassword) obj.confirmPassword = confirmPassword;
+    const token = req.headers["authorization"].split(" ")[1];
 
-    if (obj == {}) {
-      return res.status(500).json(fail("No changes detected"));
+    const decoded = jwt.verify(token, process.env.NEXT_PUBLIC_SECRET_KEY);
+    const decodedName = decoded?.name;
+
+    const currentUser = await UserModel.findOne({ email: decodedName });
+
+    if (currentUser?.isAdmin == true) {
+
+      const salt = await bcrypt.genSalt(6);
+      const passwordHash = await bcrypt.hash(password, salt);
+      const confirmPasswordHash = await bcrypt.hash(confirmPassword, salt);
+
+      const newUser = {
+        name: name,
+        email: email,
+        password: passwordHash,
+        confirmPassword: confirmPasswordHash,
+      };
+
+      await UserModel.findByIdAndUpdate(id, newUser);
+
+      return res.json({ status: true, msg: "User updated", user: newUser });
     }
 
-    const newUser = await UserModel.findByIdAndUpdate(id, obj);
+    if (currentUser?.id == id) {
+      const userId = currentUser?.id;
+      const newUser = {
+        name: name,
+        email: email,
+        password: password,
+        confirmPassword: confirmPassword,
+      };
 
-    res.json({ status: true, msg: "User updated", user: newUser });
+      await UserModel.findByIdAndUpdate(userId, newUser);
+      return res.json({ status: true, msg: "User updated", user: newUser });
+    } else {
+      return res.status(403).json({
+        status: false,
+        error: "You don't have permission to update this user!",
+      });
+    }
   } catch (error) {
-    res.status(404).json({
+    return res.status(404).json({
       status: false,
       error: "An error occurred during the update! Please, try again!",
     });

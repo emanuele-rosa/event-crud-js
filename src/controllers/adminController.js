@@ -62,7 +62,7 @@ exports.deleteUser = async (req, res) => {
       return res.status(404).json({ status: false, error: "User not found!" });
     }
 
-    if (user.isAdmin === true) {
+    if (user?.isAdmin === true) {
       return res
         .status(403)
         .json({ status: false, error: "You can't delete an admin user!" });
@@ -70,11 +70,11 @@ exports.deleteUser = async (req, res) => {
 
     await UserModel.findByIdAndDelete(id).then((user) => {
       if (user) {
-        res.json({ status: true, msg: "User deleted successfully!" });
+        return res.json({ status: true, msg: "User deleted successfully!" });
       }
     });
   } catch {
-    res.json({
+    return res.json({
       status: false,
       error: "An error occurred during deletion. Please, try again!",
     });
