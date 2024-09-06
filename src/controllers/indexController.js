@@ -18,14 +18,9 @@ exports.createAdminUser = async (user, req, res) => {
     const adminEmail = process.env.ADMIN_EMAIL;
 
     const existingAdmin = await UserModel.findOne({ email: adminEmail });
-    console.log(existingAdmin);
     if (existingAdmin === null) {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(
-        process.env.ADMIN_PASSWORD,
-        salt
-      );
-      const hashedConfirmPassword = await bcrypt.hash(
         process.env.ADMIN_PASSWORD,
         salt
       );
@@ -34,7 +29,6 @@ exports.createAdminUser = async (user, req, res) => {
         name: "Admin",
         email: adminEmail,
         password: hashedPassword,
-        confirmPassword: hashedConfirmPassword,
         isAdmin: true,
         token: token,
       });
@@ -51,7 +45,6 @@ exports.createAdminUser = async (user, req, res) => {
       });
     }
   } catch (error) {
-    console.error(error);
     return req.status(500).json({
       status: false,
       error: "Internal Server Error",
