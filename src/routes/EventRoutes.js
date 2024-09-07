@@ -7,12 +7,15 @@ const {
   updateEvent,
   deleteEvent,
   listEvents,
+  getEventByUser,
 } = require("../controllers/eventController");
 
 const { validateToken } = require("../helpers/auth");
 const { findEvent, validateName } = require("../helpers/event");
 
 router.get("/", validateToken, listEvents);
+
+router.get("/byUser", getEventByUser);
 
 router.get("/:id", validateToken, getEventById);
 

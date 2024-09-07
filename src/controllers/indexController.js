@@ -50,7 +50,6 @@ exports.createAdminUser = async (user, req, res) => {
       });
     }
   } catch (error) {
-    console.log(error);
     return req.status(500).json({
       status: false,
       error: "An error occured during admin user creation",

@@ -5,17 +5,19 @@ const EventModel = mongoose.model("Event", EventSchema);
 const UserSchema = require("../model/User");
 const UserModel = mongoose.model("User", UserSchema);
 
+getToken = (req) => {
+  let token = req.headers["authorization"];
+
+  let cleanedToken = token.split(" ")[1];
+
+  const decoded = jwt.verify(cleanedToken, process.env.NEXT_PUBLIC_SECRET_KEY);
+  return decoded;
+};
+
 exports.createEvent = async (req, res) => {
   try {
-    let token = req.headers["authorization"];
-
-    let cleanedToken = token.split(" ")[1];
-
-    const decoded = jwt.verify(
-      cleanedToken,
-      process.env.NEXT_PUBLIC_SECRET_KEY
-    );
-    const author = await UserModel.findOne({ email: decoded?.name });
+    let token = getToken(req);
+    const author = await UserModel.findOne({ email: token?.name });
 
     const { name, place, date, description } = req.body;
     const newEvent = new EventModel({
@@ -58,6 +60,7 @@ exports.getEventById = async (req, res) => {
 
     res.json({ status: true, event: event });
   } catch (error) {
+    console.log(error);
     res.json({ status: false, error: "An error occurred. Please try again!" });
   }
 };
@@ -98,6 +101,26 @@ exports.deleteEvent = async (req, res) => {
     res.json({
       status: false,
       error: "An error occurred during deletion. Please, try again!",
+    });
+  }
+};
+
+exports.getEventByUser = async (req, res) => {
+  try {
+    let token = getToken(req);
+
+    const author = await UserModel.findOne({ email: token?.name });
+
+    let events = await EventModel.find({
+      createdBy: author?.id,
+    });
+
+    res.json({ status: true, list: events });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({
+      status: false,
+      error: "An error occurred while fetching the events. Please, try again!",
     });
   }
 };
